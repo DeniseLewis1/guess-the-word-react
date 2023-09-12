@@ -2,7 +2,7 @@
   box-sizing: border-box;
 }
 
-.App {
+body {
   display: flex;
   align-items: center;
   justify-content: center;
