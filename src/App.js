@@ -6,18 +6,14 @@ class App extends Component {
 
   state = {
     guessedLettersElement: [],
-    guessButton: "",
     letterInput: "",
     wordInProgress: "",
-    remainingGuessesElement: "",
-    remainingGuessesSpan: "8 guesses",
     message: "",
-    playAgainButton: "",
     word: "magnolia",
     guessedLetters: [],
     remainingGuesses: 8,
-  wonGame: false,
-  newGame: false
+    wonGame: false,
+    newGame: false
   };
 
   async componentDidMount() {
@@ -53,14 +49,10 @@ class App extends Component {
   };
 
   // Guess button clicked
-  // guessButton.addEventListener("click", function (e) 
   guessButton = e => {
     e.preventDefault();
-    //const guess = letterInput.value;
-    const guess = this.state.letterInput;   //const guess = e.target.value;
-    //letterInput.value = "";
-    this.setState({ letterInput: "" });
-    this.setState({ message: "" });
+    const guess = this.state.letterInput;
+    this.setState({ letterInput: "", message: "" });
     const guessChecked = this.inputCheck(guess);
     
     if (guessChecked) {
@@ -103,15 +95,8 @@ class App extends Component {
   // Display guessed letters
   showGuesses = () => {
     this.setState({ guessedLettersElement: [] });
-/*    for (let letter of this.state.guessedLetters) {
-        let listItem = document.createElement("li");
-        listItem.innerText = letter;
-        this.state.guessedLettersElement.append(listItem); 
-    }
-*/
-  let guessedLettersList = this.state.guessedLetters.map((letter) => <li>{letter}</li>);
-  this.setState({ guessedLettersElement: guessedLettersList });
-
+    const guessedLettersList = this.state.guessedLetters.map((letter) => <li key={letter}>{letter}</li>);
+    this.setState({ guessedLettersElement: guessedLettersList });
   };
 
   // Update word in progress with correct letters
@@ -128,7 +113,6 @@ class App extends Component {
         }
     }
 
-    //wordInProgress.innerText = showWord.join("");
     this.setState({ wordInProgress: showWord.join("") });
     this.checkWin(showWord.join(""));
   };
@@ -139,30 +123,21 @@ class App extends Component {
     if (wordUpper.includes(guess)) {
         this.setState({ message: `Good guess! The word has the letter ${guess}.` });
     } else {
-        this.setState({ message:  `Sorry, the word has no ${guess}.` });
-        this.setState({remainingGuesses: this.state.remainingGuesses -= 1 });
+        this.setState({ message:  `Sorry, the word has no ${guess}.`, remainingGuesses: this.state.remainingGuesses -= 1 });
     }
 
     if (this.state.remainingGuesses === 0) {
-        this.setState({ message: `Game over! The word is <span className="highlight">${wordUpper}</span>.` });
+        this.setState({ message: `Game over! The word is <span className="highlight">${wordUpper}</span>.`, newGame: true });
 //        this.startOver();
-this.setState({ newGame: true });
-    } else if (this.state.remainingGuesses === 1) {
-        this.setState({ remainingGuessesSpan: `${this.state.remainingGuesses} guess` });
-    } else {
-        this.setState({ remainingGuessesSpan: `${this.state.remainingGuesses} guesses` });
     }
   };
 
   // Check if player won
   checkWin = (word) => {
     if (word === this.state.word.toUpperCase()) {
-this.setState({ wonGame: true });
+      this.setState({ wonGame: true, message: `You guessed correct the word! Congrats!`, newGame: true });
 //        message.classList.add("win");
-        //this.setState({ message: `<p className="highlight">You guessed correct the word! Congrats!</p>` });
-        this.setState({ message: `You guessed correct the word! Congrats!` });
 //        this.startOver();
-this.setState({ newGame: true });
     }
   };
 /*
@@ -175,22 +150,17 @@ this.setState({ newGame: true });
   };
 */
   // Play Again button clicked
-  //playAgainButton.addEventListener ("click", function () 
   playAgainButton = () => {
-this.setState({ wonGame: false });
+/*
 //    message.classList.remove("win");
-    this.setState({ message: "" });
-    this.setState({ guessedLettersElement: "" });
-    this.setState({ remainingGuesses: 8 });
-    this.setState({ guessedLetters: [] });
-    this.setState({ remainingGuessesSpan: `${this.state.remainingGuesses} guesses` });
 //    guessButton.classList.remove("hide");
 //    remainingGuessesElement.classList.remove("hide");
 //    guessedLettersElement.classList.remove("hide");
 //    playAgainButton.classList.add("hide");
 //    this.getWord();
-this.setState({ newGame: false });
+*/
     this.componentDidMount();
+    this.setState({ wonGame: false, message: "", guessedLettersElement: "", remainingGuesses: 8, guessedLetters: [], newGame: false })  
   };
 
 
@@ -208,7 +178,7 @@ this.setState({ newGame: false });
             <p className="message">{this.state.message}</p>}
 {/*          <p className={this.state.wonGame ? "message win" : "message"}>{this.state.message}</p> */}
           <p className="word-in-progress">{this.state.wordInProgress}</p>
-          <p className={this.state.newGame ? "remaining hide" : "remaining"}>You have <span>{this.state.remainingGuessesSpan}</span> remaining.</p>
+          <p className={this.state.newGame ? "remaining hide" : "remaining"}>You have {this.state.remainingGuesses} {this.state.remainingGuesses === 1 ? "guess" : "guesses"} remaining.</p>
           <ul className={this.state.newGame ? "guessed-letters hide" : "guessed-letters"}>{this.state.guessedLettersElement}</ul>
           <form action="" className="guess-form">
             <label for="letter">Type one letter:</label>
