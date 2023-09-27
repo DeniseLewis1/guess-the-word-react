@@ -1,22 +1,19 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import logo from "./img/logo.png"
 
-class App extends Component {
+const App = () => {
+  const [guessedLettersElement, setGuessedLettersElement] = useState([]);
+  const [letterInput, setLetterInput] = useState("");
+  const [wordInProgress, setWordInProgress] = useState("");
+  const [message, setMessage] = useState("");
+  const [word, setWord] = useState("magnolia");
+  const [guessedLetters, setGuessedLetters] = useState([]);
+  const [remainingGuesses, setRemainingGuesses] = useState(8);
+  const [wonGame, setWonGame] = useState(false);
+  const [newGame, setNewGame] = useState(false);
 
-  state = {
-    guessedLettersElement: [],
-    letterInput: "",
-    wordInProgress: "",
-    message: "",
-    word: "magnolia",
-    guessedLetters: [],
-    remainingGuesses: 8,
-    wonGame: false,
-    newGame: false
-  };
-
-  async componentDidMount() {
+  const getWord = async () => {
     const response = await fetch("https://gist.githubusercontent.com/skillcrush-curriculum/7061f1d4d3d5bfe47efbfbcfe42bf57e/raw/5ffc447694486e7dea686f34a6c085ae371b43fe/words.txt");
     const words = await response.text();
     const wordArray = words.split("\n");
@@ -39,7 +36,7 @@ class App extends Component {
 //  getWord;
 */
   // Display placeholders
-  placeholder = word => {
+  const placeholder = word => {
     let placeholderLetters = [];
     for (let letter of word) {
         placeholderLetters.push("●");
@@ -49,7 +46,7 @@ class App extends Component {
   };
 
   // Guess button clicked
-  guessButton = e => {
+  const guessButton = e => {
     e.preventDefault();
     const guess = this.state.letterInput;
     this.setState({ letterInput: "", message: "" });
@@ -60,12 +57,12 @@ class App extends Component {
     }
   };
 
-  updateInput = e => {
+  const updateInput = e => {
     this.setState({ letterInput: e.target.value });
   };
 
   // Validate player input
-  inputCheck = input => {
+  const inputCheck = input => {
     const acceptedLetter = /[a-zA-Z]/;
 
     if (input === "") {
@@ -80,7 +77,7 @@ class App extends Component {
   };
 
   // Check if letter has been guessed already
-  makeGuess = guess => {
+  const makeGuess = guess => {
     guess = guess.toUpperCase();
     if (this.state.guessedLetters.includes(guess)) {
         this.setState({ message: `You've already guessed that letter, try again!` });
@@ -93,14 +90,14 @@ class App extends Component {
   };
 
   // Display guessed letters
-  showGuesses = () => {
+  const showGuesses = () => {
     this.setState({ guessedLettersElement: [] });
     const guessedLettersList = this.state.guessedLetters.map((letter) => <li key={letter}>{letter}</li>);
     this.setState({ guessedLettersElement: guessedLettersList });
   };
 
   // Update word in progress with correct letters
-  updateWordInProgress = guessedLetters => {
+  const updateWordInProgress = guessedLetters => {
     const wordUpper = this.state.word.toUpperCase();
     const wordArray = wordUpper.split("");
     let showWord = [];
@@ -118,7 +115,7 @@ class App extends Component {
   };
 
   // Determine number of remaining guesses
-  countRemainingGuesses = guess => {
+  const countRemainingGuesses = guess => {
     const wordUpper = this.state.word.toUpperCase();
     if (wordUpper.includes(guess)) {
         this.setState({ message: `Good guess! The word has the letter ${guess}.` });
@@ -133,7 +130,7 @@ class App extends Component {
   };
 
   // Check if player won
-  checkWin = (word) => {
+  const checkWin = (word) => {
     if (word === this.state.word.toUpperCase()) {
       this.setState({ wonGame: true, message: `You guessed correct the word! Congrats!`, newGame: true });
 //        message.classList.add("win");
@@ -150,7 +147,7 @@ class App extends Component {
   };
 */
   // Play Again button clicked
-  playAgainButton = () => {
+  const playAgainButton = () => {
 /*
 //    message.classList.remove("win");
 //    guessButton.classList.remove("hide");
@@ -159,14 +156,15 @@ class App extends Component {
 //    playAgainButton.classList.add("hide");
 //    this.getWord();
 */
-    this.componentDidMount();
-    this.setState({ wonGame: false, message: "", guessedLettersElement: "", remainingGuesses: 8, guessedLetters: [], newGame: false })  
+    //this.componentDidMount();
+    this.getWord();
+    this.setState({ wonGame: false, message: "", guessedLettersElement: "", remainingGuesses: 8, guessedLetters: [], newGame: false });
   };
 
 
 
 
-  render() {
+  //render() {
     return (
       <div className="App">
         <div className="container">
@@ -191,7 +189,7 @@ class App extends Component {
         </div>
       </div>
     );
-  }
+  //}
 }
 
 export default App;
